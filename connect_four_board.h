@@ -18,6 +18,8 @@ private:
   move last_played_col;
   player winner;
   static const char player_markers[3];
+  bool checkInput(move a_move);
+  bool checkPlayer();
 
 public:
   ConnectFourBoard();

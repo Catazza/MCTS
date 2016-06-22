@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 #include "general_board.h"
 #include "connect_four_board.h"
 
@@ -8,9 +9,12 @@
 using namespace std;
 
 
-
+/* Markers to fill the board */
 const char ConnectFourBoard :: player_markers[] = {'.', 'X', 'O'};
 
+
+
+/* Constructor */
 ConnectFourBoard :: ConnectFourBoard() {
   no_players = 2;
   player_turn = 1;  //Player 1 starts
@@ -28,13 +32,33 @@ ConnectFourBoard :: ConnectFourBoard() {
     }
   }
 }
+/* END OF FUNCTION DEFINITION */
+
 
 
 
 /* Function to get the legal avaliable moves for this state of the board */
 vector<move> ConnectFourBoard :: getAvailableMoves(player a_player){
+  checkPlayer();
+
+  vector<move> available_moves;
+
+  if (game_over) {
+    return available_moves;
+  }
+
+  available_moves.reserve(num_cols);
+
+  for (int col = 0; col < num_cols; ++col) {
+    if (board[0][col] == player_markers[0]) {
+      available_moves.push_back(col);
+    }
+  }
+
+  return available_moves;
 
 }
+/* END OF FUNCTION DEFINITION */
 
 
 
@@ -42,16 +66,20 @@ vector<move> ConnectFourBoard :: getAvailableMoves(player a_player){
 player ConnectFourBoard :: getWinner(){
   return winner;
 }
+/* END OF FUNCTION DEFINITION */
 
 
 
 bool ConnectFourBoard :: isGameOver(){
   return game_over;
 }
+/* END OF FUNCTION DEFINITION */
+
 
 
 
 bool ConnectFourBoard :: checkEndgame(){
+  // Check - was there but possibly remove.
   //  if (last_col < 0) {
   //return player_markers[0];
   //}
@@ -112,14 +140,58 @@ bool ConnectFourBoard :: checkEndgame(){
 
   return false;
 }
+/* END OF FUNCTION DEFINITION */
 
 
 
 
-bool ConnectFourBoard :: doMove(move a_move){
+/* Function to submit a move to the board. Also checks the move is valid. 
+ Output: returns true if move successfully made. */
+bool ConnectFourBoard :: doMove(move a_move) {
+  
+  if (!checkInput(a_move)) {
+    return false;
+  }
+
+  if (board[0][a_move] != player_markers[0]) {
+    cerr << "column already full" << endl;
+    return false;
+  }
+  
+  if (!checkPlayer()){
+    cerr << "something went wrong with player numbers"<<endl;
+    return false;
+  }
+
+  if (isGameOver()){
+    cerr << "Game has already ended";
+    return false;
+  }
+
+
+  int row = num_rows - 1;
+  while (board[row][a_move] != player_markers[0]) row--;
+  board[row][a_move] = player_markers[player_turn];
+  last_played_col = a_move;
+  last_played_row = row;
+
+
+  /* check if the move ends the game */
+  if (checkEndgame()) {
+    cout << "Game is over." << endl;
+    cout << "Player "<< getWinner() << " wins!" << endl;
+    return true;
+  }
+
+  player_turn = 3 - player_turn;  
+
+  return true;
 }
+/* END OF FUNCTION DEFINITION */
 
 
+
+/* Helper function to print te board to screen */
 void ConnectFourBoard :: printBoard(){
   cout << endl;
   cout << " ";
@@ -147,14 +219,52 @@ void ConnectFourBoard :: printBoard(){
     cout << "--";
   }
   cout << "-+" << endl;
-  cout << player_markers[player_turn] << " to move " << endl << endl;
+  
+  if (!isGameOver())
+    cout << player_markers[player_turn] << " (Player " << player_turn << ")" << " to move " << endl << endl;
 
 }
+/* END OF FUNCTION DEFINITION */
 
 
+
+
+/* maybe unused?? */
 player ConnectFourBoard :: getPlayerTurn(){
-
+  return player_turn;
 }
+/* END OF FUNCTION DEFINITION */
 
 
 
+
+/* Helper function to check input is clean. To be improved for letters. modifying cin possibly */
+bool ConnectFourBoard :: checkInput(move a_move) {
+
+  // Check move out of bounds
+  if (a_move < 0 || a_move > 6) {
+    cerr << "Move out of bounds." << endl;
+    return false;
+  } 
+
+  // Check letter
+  if (isalpha(a_move)) {
+    cerr << "need numeric input" << endl;
+    return false;
+  }
+
+  return true;
+}
+/* END OF FUNCTION DEFINITION */
+
+
+
+
+/* Quick check to see if it's still player 1 or 2 to move */
+bool ConnectFourBoard :: checkPlayer() {
+  if (player_turn == 1 || player_turn == 2)
+    return true;
+
+  return false;
+}
+/* END OF FUNCTION DEFINITION */
