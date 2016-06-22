@@ -12,11 +12,18 @@ using namespace std;
 class ConnectFourBoard : public GeneralBoard {
 private:
   char board[7][6];
+  int num_rows;
+  int num_cols;
+  move last_played_row;
+  move last_played_col;
+  player winner;
+  static const char player_markers[3];
 
 public:
   ConnectFourBoard();
   virtual vector<move> getAvailableMoves(player a_player);
   virtual player getWinner();
+  virtual bool checkEndgame();
   virtual bool isGameOver();
   virtual bool doMove(move a_move);
   virtual void printBoard();

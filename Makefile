@@ -1,5 +1,5 @@
-connectFour: main.o connect_four_board.o
-	g++ -Wall -g main.o connect_four.o -o connectFour
+connectFour: connect_four_main.o connect_four_board.o
+	g++ -Wall -g connect_four_main.o connect_four_board.o -o connectFour
 
 connect_four_main.o: connect_four_main.cpp connect_four_board.h
 	g++ -Wall -g -c connect_four_main.cpp

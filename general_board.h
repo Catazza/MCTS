@@ -11,9 +11,10 @@ typedef int move;
 typedef int player;
 
 class GeneralBoard {
-private:
+protected:
   int player_turn;
   int no_players;
+  bool game_over;
 
 public:
   virtual vector<move> getAvailableMoves(player a_player) = 0;
