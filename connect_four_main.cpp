@@ -16,8 +16,15 @@ int main(){
   while (!the_board.isGameOver()){
     cout << "Enter a move: " ;
     cin >> a_move;
-    the_board.doMove(a_move);
-    the_board.printBoard();
+    if (cin.fail()){
+      cerr << "Not an integer. Please try again" << endl;
+      cin.clear();
+      cin.ignore(256,'\n');
+    }
+    else {
+      if(the_board.doMove(a_move))
+	the_board.printBoard();
+    }
   }
 
 
