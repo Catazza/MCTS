@@ -14,6 +14,7 @@ private:
   TreeNode* descendTree(TreeNode* a_node);
   TreeNode* expandTree(TreeNode* a_node);
   TreeNode* selectBestChild(TreeNode* a_node);
+  move selectBestMoveRoot(TreeNode* the_root);
   double doRandomPlayout(TreeNode* a_node);
   void backupNegamax(TreeNode* a_node, double a_reward);
 

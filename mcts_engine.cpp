@@ -43,6 +43,10 @@ void MCTSEngine :: backupNegamax(TreeNode* a_node, double a_reward){
 }
 
 
+move MCTSEngine :: selectBestMoveRoot(TreeNode* the_root) {
+
+}
+
 
 move MCTSEngine :: calculateMove(GeneralBoard* a_board) {
   
@@ -56,7 +60,7 @@ move MCTSEngine :: calculateMove(GeneralBoard* a_board) {
     backupNegamax(expandable_node, payoff);
   }
 
-  
+  return selectBestMoveRoot(root_tree);
 
 
 
