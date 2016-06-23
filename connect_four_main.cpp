@@ -1,6 +1,8 @@
 #include <iostream>
 #include "general_board.h"
 #include "connect_four_board.h"
+#include "tree_node.h"
+#include "mcts_engine.h"
 
 
 using namespace std;
