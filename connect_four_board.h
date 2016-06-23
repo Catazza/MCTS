@@ -11,14 +11,14 @@ using namespace std;
 
 class ConnectFourBoard : public GeneralBoard {
 private:
-  char board[7][6];
+  char board[6][7];
   int num_rows;
   int num_cols;
   move last_played_row;
   move last_played_col;
   player winner;
   static const char player_markers[3];
-  bool checkInput(move a_move);
+  bool checkInput(const move& a_move);
   bool checkPlayer();
 
 public:

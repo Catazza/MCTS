@@ -168,10 +168,11 @@ bool ConnectFourBoard :: doMove(move a_move) {
     return false;
   }
 
-
+  //find available spot and set it
   int row = num_rows - 1;
   while (board[row][a_move] != player_markers[0]) row--;
   board[row][a_move] = player_markers[player_turn];
+
   last_played_col = a_move;
   last_played_row = row;
 
@@ -197,13 +198,12 @@ void ConnectFourBoard :: printBoard(){
   cout << " ";
 
   //print header
-  for (int col = 0; col < num_cols - 1; ++col) {
+  for (int col = 0; col < num_cols; ++col) {
     cout << col << ' ';
   }
+  cout << endl;
   
-  //??
-  cout << num_cols - 1 << endl;
-  
+
   //Print inner board
   for (int row = 0; row < num_rows; ++row) {
     cout << "|";
@@ -213,7 +213,7 @@ void ConnectFourBoard :: printBoard(){
     cout << board[row][num_cols - 1] << "|" << endl;
   }
 
-  //Print frame
+  //Print bottom part of frame
   cout << "+";
   for (int col = 0; col < num_cols - 1; ++col) {
     cout << "--";
@@ -239,7 +239,7 @@ player ConnectFourBoard :: getPlayerTurn(){
 
 
 /* Helper function to check input is clean. To be improved for letters. modifying cin possibly */
-bool ConnectFourBoard :: checkInput(move a_move) {
+bool ConnectFourBoard :: checkInput(const move& a_move) {
 
   // Check move out of bounds
   if (a_move < 0 || a_move > 6) {
@@ -268,3 +268,5 @@ bool ConnectFourBoard :: checkPlayer() {
   return false;
 }
 /* END OF FUNCTION DEFINITION */
+
+
