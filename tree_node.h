@@ -11,17 +11,23 @@ class TreeNode {
 private:
   int games_played;
   int games_won;
-  vector<move> untried_children;
-  vector<move> visited_children;
+  vector<Move> untried_children;
+  vector<TreeNode*> visited_children;
   TreeNode* parent;
-  move landing_move;
+  Move landing_move;
   int player_turn;
+  bool is_terminal;
 
 public:
   TreeNode(GeneralBoard* a_board);
-  TreeNode(GeneralBoard* a_board, move landing_move, TreeNode* the_parent);
+  TreeNode(ConnectFourBoard* a_board, Move landing_move, TreeNode* the_parent);
+  bool isTerminal();
+  vector<Move> getUntriedChildren();
+  vector<TreeNode*> getVisitedChildren();
+  int getWins();
+  int getVisits();
   bool hasUntriedChildren();
-  TreeNode* addChild();
+  TreeNode* addChild(Move _landing_move, ConnectFourBoard* a_state);
 };
 
 

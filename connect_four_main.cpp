@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include "general_board.h"
 #include "connect_four_board.h"
 #include "tree_node.h"
@@ -10,7 +11,7 @@ using namespace std;
 
 int main(){
   
-  move a_move;
+  Move a_move;
   ConnectFourBoard the_board;
 
   the_board.printBoard();

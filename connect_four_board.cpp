@@ -37,11 +37,29 @@ ConnectFourBoard :: ConnectFourBoard() {
 
 
 
+/* Function to create a copy of the current board */
+ConnectFourBoard ConnectFourBoard :: cloneBoard(ConnectFourBoard* a_board) {
+
+
+  for (int row = 0; row < num_rows; row++){
+    for (int col = 0; col < num_cols; col++){
+      board[row][col] = a_board->board[row][col];
+    }
+  }
+
+  player_turn = a_board->player_turn;
+  game_over = a_board->game_over;
+  winner = a_board->winner;
+  last_played_row = a_board->last_played_row;
+  last_played_col = a_board->last_played_col;
+}
+
+
 /* Function to get the legal avaliable moves for this state of the board */
-vector<move> ConnectFourBoard :: getAvailableMoves(player a_player){
+vector<Move> ConnectFourBoard :: getAvailableMoves(player a_player){
   checkPlayer();
 
-  vector<move> available_moves;
+  vector<Move> available_moves;
 
   if (game_over) {
     return available_moves;
@@ -147,7 +165,7 @@ bool ConnectFourBoard :: checkEndgame(){
 
 /* Function to submit a move to the board. Also checks the move is valid. 
  Output: returns true if move successfully made. */
-bool ConnectFourBoard :: doMove(move a_move) {
+bool ConnectFourBoard :: doMove(Move a_move) {
   
   if (!checkInput(a_move)) {
     return false;
@@ -239,7 +257,7 @@ player ConnectFourBoard :: getPlayerTurn(){
 
 
 /* Helper function to check input is clean. To be improved for letters. modifying cin possibly */
-bool ConnectFourBoard :: checkInput(const move& a_move) {
+bool ConnectFourBoard :: checkInput(const Move& a_move) {
 
   // Check move out of bounds
   if (a_move < 0 || a_move > 6) {

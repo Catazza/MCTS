@@ -14,22 +14,23 @@ private:
   char board[6][7];
   int num_rows;
   int num_cols;
-  move last_played_row;
-  move last_played_col;
+  Move last_played_row;
+  Move last_played_col;
   player winner;
   static const char player_markers[3];
-  bool checkInput(const move& a_move);
+  bool checkInput(const Move& a_move);
   bool checkPlayer();
 
 public:
   ConnectFourBoard();
-  virtual vector<move> getAvailableMoves(player a_player);
+  virtual vector<Move> getAvailableMoves(player a_player);
   virtual player getWinner();
   virtual bool checkEndgame();
   virtual bool isGameOver();
-  virtual bool doMove(move a_move);
+  virtual bool doMove(Move a_move);
   virtual void printBoard();
   virtual player getPlayerTurn();
+  ConnectFourBoard cloneBoard(ConnectFourBoard* a_board);
 };
 
 
