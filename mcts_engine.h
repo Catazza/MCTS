@@ -16,7 +16,7 @@ private:
   TreeNode* expandTree(TreeNode* a_node, mt19937_64& random_engine, ConnectFourBoard* current_game_state);
   TreeNode* selectBestChild(TreeNode* a_node);
   Move selectBestMoveRoot(TreeNode* the_root);
-  double doRandomPlayout(TreeNode* a_node);
+  double doRandomPlayout(TreeNode* a_node, ConnectFourBoard& a_state, mt19937_64& random_engine, const player& moving_player);
   void backupNegamax(TreeNode* a_node, double a_reward);
   Move selectExpandingMove(TreeNode* a_node, mt19937_64& random_engine);
 

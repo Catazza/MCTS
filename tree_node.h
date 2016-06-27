@@ -26,6 +26,10 @@ public:
   vector<TreeNode*> getVisitedChildren();
   int getWins();
   int getVisits();
+  TreeNode* getParent();
+  Move getLandingMove();
+  void updateWins(double a_payoff);
+  void updateVisits();
   bool hasUntriedChildren();
   TreeNode* addChild(Move _landing_move, ConnectFourBoard* a_state);
 };

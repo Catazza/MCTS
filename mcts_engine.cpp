@@ -54,7 +54,7 @@ TreeNode* MCTSEngine :: expandTree(TreeNode* a_node, mt19937_64& random_engine,
   /* Do the move */
   current_game_state->doMove(expanding_move);
 
-  /* Move to the child */
+  /* Create the child and move to it */
   a_node = a_node->addChild(expanding_move, current_game_state);
 
   return a_node;
@@ -66,9 +66,11 @@ TreeNode* MCTSEngine :: expandTree(TreeNode* a_node, mt19937_64& random_engine,
 
 /* CONSIDER ASSIGNING THIS FUNCTION TO THE NODE (as Petter does) TO AVOID PASSING VECTOR OF MOVES AROUND?? */
 Move MCTSEngine :: selectExpandingMove(TreeNode* a_node, mt19937_64& random_engine) {
-  
+
+  /* Retrieve the untried moves */
   vector<Move> available_moves = a_node->getUntriedChildren();
   
+  /* Generate uniform random number */
   uniform_int_distribution<size_t> moves_distribution(0, available_moves.size() - 1);
 
   return available_moves[moves_distribution(random_engine)];  
@@ -84,7 +86,7 @@ Move MCTSEngine :: selectExpandingMove(TreeNode* a_node, mt19937_64& random_engi
 TreeNode* MCTSEngine :: selectBestChild(TreeNode* a_node) {
 
   TreeNode* best_child = NULL;
-  double max_UCT_score = -9999999;
+  double max_UCT_score = -9999999999999;
   double UCT_score;
   vector<TreeNode*> visited_children = a_node->getVisitedChildren();
 
@@ -106,9 +108,30 @@ TreeNode* MCTSEngine :: selectBestChild(TreeNode* a_node) {
 
 
 
-
-double MCTSEngine :: doRandomPlayout(TreeNode* a_node) {
+// Different from Petter. Insted of trying, retrieves set of available moves */
+double MCTSEngine :: doRandomPlayout(TreeNode* a_node, ConnectFourBoard& a_state, 
+				     mt19937_64& random_engine, const player& moving_player) {
   
+  /* Retrieve the untried moves */
+  vector<Move> available_moves = a_state.getAvailableMoves(0);
+  
+  /* Generate uniform random number */
+  uniform_int_distribution<size_t> moves_distribution(0, available_moves.size() - 1);
+
+  while (!a_state.isGameOver()) {
+    a_state.doMove(available_moves[moves_distribution(random_engine)]);  
+    available_moves = a_state.getAvailableMoves(0); //re-fetch new set of available moves
+  }
+
+  // We are at the final state, get payoff
+  if (a_state.getWinner() == 9) {
+    return -0.5;  //use 0.5 for draw
+  }
+  else if (a_state.getWinner() == moving_player) {
+    return -1.0; //moving player wins
+  }
+  
+  return 0; // it is a lost game
 }
 
 
@@ -116,14 +139,33 @@ double MCTSEngine :: doRandomPlayout(TreeNode* a_node) {
 
 
 void MCTSEngine :: backupNegamax(TreeNode* a_node, double a_reward){
-
+  while (a_node != nullptr) {
+    a_node -> updateVisits();
+    a_node -> updateWins(a_reward);
+    a_reward = a_reward * (-1); //invert payoff, negamax version
+    a_node = a_node->getParent();
+  }
 }
 
 
 
 
 Move MCTSEngine :: selectBestMoveRoot(TreeNode* the_root) {
+  Move best_child = -1;
+  double max_score = -9999999999999;
+  double score;
+  vector<TreeNode*> visited_children = the_root->getVisitedChildren();
 
+  for (TreeNode* child : visited_children) {
+    score = double(child->getWins()) / double(child->getVisits());
+    
+    if (score > max_score){
+      best_child = child->getLandingMove();
+      max_score = score;
+    }
+  }
+
+  return best_child;
 }
 
 
@@ -135,11 +177,12 @@ Move MCTSEngine :: calculateMove(ConnectFourBoard* a_board) {
   /* Create root of the MC Tree, starting from current state */
   TreeNode* root_tree = new TreeNode(a_board);
   //unique_ptr<TreeNode> root_tree = unique_ptr<TreeNode>(new TreeNode(a_board));  // evaluate usefulness of unique_ptr
+  int moving_player = a_board->getPlayerTurn();
 
 
   /* Initialize the random-number engine */
   random_device rd;
-  mt19937_64 random_engine(rd());    // Non-deterministic seed
+  mt19937_64 random_engine(1997);    // Non-deterministic seed
 
   
   /* Backbone of the algorithm */
@@ -154,14 +197,11 @@ Move MCTSEngine :: calculateMove(ConnectFourBoard* a_board) {
     TreeNode* expandable_node = descendTree(root_tree, random_engine, &usable_state);
 
     /* Do a ramdom playout till end of game */
-    double payoff = doRandomPlayout(expandable_node);
+    double payoff = doRandomPlayout(expandable_node, usable_state, random_engine, moving_player);
 
     /* Back-propagate the result of the simulation */
     backupNegamax(expandable_node, payoff);
   }
 
   return selectBestMoveRoot(root_tree);
-
-
-
 }

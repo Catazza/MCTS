@@ -156,6 +156,15 @@ bool ConnectFourBoard :: checkEndgame(){
     return true;
   }
 
+
+  /* Check for draws */
+  vector<Move> remaining_moves = getAvailableMoves(0);
+  if (remaining_moves.empty()){
+    winner = 9; // Use 9 to indicate draw
+    game_over = true;
+    return true;
+  }
+
   return false;
 }
 /* END OF FUNCTION DEFINITION */
@@ -172,7 +181,7 @@ bool ConnectFourBoard :: doMove(Move a_move) {
   }
 
   if (board[0][a_move] != player_markers[0]) {
-    cerr << "column already full" << endl;
+    //cerr << "column already full" << endl;
     return false;
   }
   
@@ -194,13 +203,8 @@ bool ConnectFourBoard :: doMove(Move a_move) {
   last_played_col = a_move;
   last_played_row = row;
 
-
-  /* check if the move ends the game */
-  if (checkEndgame()) {
-    cout << "Game is over." << endl;
-    cout << "Player "<< getWinner() << " wins!" << endl;
-    return true;
-  }
+  /* Check state of game after the move (i.e. if it ended) */
+  checkEndgame();
 
   player_turn = 3 - player_turn;  
 
